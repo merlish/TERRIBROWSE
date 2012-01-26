@@ -1,5 +1,9 @@
 package com.lolcode.terribrowse
 
-class Main {
+import ox.CSO._
 
+object Main {
+  def main(args: Array[String]) {
+
+  }
 }
