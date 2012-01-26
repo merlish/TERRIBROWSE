@@ -16,7 +16,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="RUNTIME" name="scala-library-2.9.1 (1)" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="scala-library-2.9.1" level="application" />
   </component>
 </module>
 
