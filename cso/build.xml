@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!-- 
+        $Id: build.xml 505 2010-08-16 18:09:23Z sufrin $ 
+-->
+<project name="CScala"  default="jar">
+
+  <property name="base.dir"     value="."                 />                
+  <property name="sources.dir"  value="${base.dir}/src"   />  
+  <property name="build.dir"    value="${base.dir}/BUILD" />  
+  <property name="doc.dir"      value="${base.dir}/doc"   />  
+  <property name="scala.home"   value="${user.home}/Scala" />
+  <property name="scala.local"  value="${user.home}/ScalaLocal" />  <!-- additional ant resources for scala -->
+  <property name="local.jars"   value="." />  <!-- jars on the compilation class path -->
+                  
+  <import file="${scala.local}/scalatasks.xml"/>
+
+  <path id="compile.classpath">
+     <path refid="scala.compile.classpath"/>
+     <fileset dir="${local.jars}">
+       <include name="**/*.jar"/>
+       <exclude name="${build.dir}/**/*.jar"/>
+     </fileset>    
+     <pathelement location="${build.dir}/oxjava"/> 
+  </path>
+  
+  <target name="oxjava" depends="" description="Compile the java support for the library">  
+    <mkdir dir="${build.dir}"/>
+    <javac  srcdir       = "${sources.dir}"
+            destdir      = "${build.dir}" >
+        <include name="**/*.java"/>
+        <exclude name="**/bench/*.java"/>
+    </javac>
+  </target>
+    
+  <target name="compile" depends="scalatasks,oxjava" description="Compile the library">  
+    <mkdir dir="${build.dir}"/>
+    <scalac   srcdir       = "${sources.dir}"
+            destdir      = "${build.dir}" 
+            deprecation  = "on"         
+            unchecked    = "on"  
+            classpathref = "scala.compile.classpath"
+            force        = "changed">
+            <include name="**/*.scala"/>    
+            <exclude name="**/bench/*.scala"/>
+    </scalac>
+  </target>
+  
+  <target name="doc" depends="scalatasks" description="Document the library">  
+    <mkdir dir="${doc.dir}"/>
+    <scaladoc
+            srcdir       = "${sources.dir}"
+            destdir      = "${doc.dir}"          
+            classpathref = "compile.classpath"
+            doctitle     = "Communicating Scala Objects"
+            unchecked    = "on"
+            >
+            <include name="**/*.scala"/>
+    </scaladoc>
+  </target>
+  
+  
+
+  
+  <target name="jar" depends="compile" description="Make a jar containing the library">
+   <jar destfile = "${build.dir}/cso.jar"       
+        basedir  = "${build.dir}"      
+        includes = "**/*.class"
+        excludes =  "*Test*"/>
+  </target>
+  
+  <target name="docjar" depends="jar,doc" description="Make a jar containing the library source and its documentation">
+   <jar destfile = "${base.dir}/csodoc.jar" basedir="${base.dir}" includes="doc/**/*,src/**/*.scala"/>     
+  </target>
+  
+  <target name="src" depends="jar" description="Make a jar containing the library source">
+   <jar destfile = "${base.dir}/cso-src.jar" basedir="${base.dir}" includes="src/**/*.scala"/>     
+  </target>
+  
+  <target name="webpub" depends="docjar" description="Distribute the libary, its source, and its documentation">
+        <!--
+        <exec executable="sh" output="/dev/tty" error="/dev/tty">
+            <arg line="-c 'webpub cso-src.jar csodoc.jar ${build.dir}/cso.jar WEBCONC/scala'"/>
+        </exec>
+        -->
+        <exec executable="sh" output="/dev/tty" error="/dev/tty">
+            <arg line="-c 'scp -v cso-src.jar csodoc.jar ${build.dir}/cso.jar tr04.ecs.ox.ac.uk:CSO'"/>
+        </exec>
+  </target>
+
+  <target name="clean" description="Remove all files from ${build.dir}">
+     <delete dir="${build.dir}"/>
+  </target>
+  
+  <target name="primes" depends="jar" description="Make Primes.jar">
+        <makemain name="primes.jar" class="PrimesTest"/>
+  </target>
+  
+  <target name="streams" depends="jar" description="Make streams.jar">
+        <makemain name="streams.jar" class="TestStreams"/>
+  </target>
+  
+  <target name="testchan" depends="jar" description="Make testchan.jar">
+        <makemain name="testchan.jar" class="TestChan"/>
+  </target>
+  
+  <target name="testalt" depends="jar" description="Make testalt.jar">
+        <makemain name="testalt.jar" class="TestAlt"/>
+  </target>
+  
+  <target name="testnet" depends="jar" description="Make testnet.jar">
+        <makemain name="testnet.jar" class="TestNet"/>
+  </target>
+  
+  <target name="testserve" depends="jar" description="Make testserve.jar">
+        <makemain name="testserve.jar" class="ox.http.Server"/>
+  </target>
+  
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

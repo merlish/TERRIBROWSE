@@ -1,0 +1,74 @@
+<project name="ScalaTasks">
+
+   <property name ="scala-library.jar"  value="${scala.home}/lib/scala-library.jar" />
+   
+   <path id="scala.compile.classpath">      
+        <pathelement location="${scala-library.jar}"/>
+   </path>   
+   
+   <path id="scalatasks.classpath">        
+       <pathelement location="${scala.home}/lib/scala-compiler.jar"/>        
+       <pathelement location="${scala-library.jar}"/>      
+   </path>
+        
+   <target name       ="scalatasks" 
+           description="Define Scala tasks and classpaths" >     
+
+      <property name ="COMPILE-CLASSPATH" refid="scala.compile.classpath" /> 
+           
+      <taskdef name="fsc"           classpathref="scalatasks.classpath" classname="scala.tools.ant.FastScalac"/>   
+      <taskdef name="scalac"        classpathref="scalatasks.classpath" classname="scala.tools.ant.Scalac"/>    
+      <taskdef name="scalascript"   classpathref="scalatasks.classpath" classname="scala.tools.ant.ScalaTool"/>
+      <taskdef name="sbaz"          classpathref="scalatasks.classpath" classname="scala.tools.ant.ScalaBazaar"/> 
+      <taskdef name="scaladoc"      classpathref="scalatasks.classpath" classname="scala.tools.ant.Scaladoc"/>  
+  </target>
+  
+  <macrodef name="makemain">
+     <!--       
+        Make the named jar file from all the compiled files in
+        ${build.dir} and with a class path pointing to the scala
+        library Example: <makemain name="test.jar" class="Test1"/>
+        THIS IS NOT A WAY OF BUILDING A CLOSED, AND TRANSPORTABLE
+        JAVA PROGRAM, FOR IT USES THE SCALA LIBRARY ON THE CURRENT
+        HOST.
+     -->
+     <attribute name="name"/>  <!-- Name of the program jar file -->
+     <attribute name="class"/> <!-- Name of the main class -->
+        <sequential>           
+           <jar destfile = "${build.dir}/@{name}"      
+                basedir  = "${build.dir}"      
+                includes = "**/*.class">
+                <manifest>
+                     <attribute name="Main-Class" value="@{class}"/>
+                     <attribute name="Class-Path" value="${scala-library.jar}"/>
+                </manifest>
+           </jar>
+        </sequential> 
+  </macrodef>
+  
+  <macrodef name="exportmain">
+     <!--       
+        Make the named jar file from all the compiled files in
+        ${build.dir} as well as the scala library jar
+     -->
+     <attribute name="name"/>  <!-- Name of the program jar file -->
+     <attribute name="class"/> <!-- Name of the main class -->
+        <sequential>           
+           <jar destfile = "${build.dir}/@{name}"      
+                basedir  = "${build.dir}"      
+                includes = "**/*.class">
+                <zipfileset src="${scala-library.jar}" includes="**/*.class" prefix=""/>
+                <manifest>
+                     <attribute name="Main-Class" value="@{class}"/>
+                </manifest>
+           </jar>
+        </sequential> 
+  </macrodef>
+  
+</project>
+
+
+
+
+
+

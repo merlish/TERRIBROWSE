@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- $Id: antlib.xml 21 2007-03-16 15:16:05Z sufrin $ -->
+<antlib>    
+  <taskdef name="fsc"           classname="scala.tools.ant.FastScalac"/>   
+  <taskdef name="scalac"        classname="scala.tools.ant.Scalac"/>    
+  <taskdef name="scalascript"   classname="scala.tools.ant.ScalaTool"/>
+  <taskdef name="sbaz"          classname="scala.tools.ant.ScalaBazaar"/> 
+  <taskdef name="scaladoc"      classname="scala.tools.ant.Scaladoc"/>
+</antlib>
+
+
